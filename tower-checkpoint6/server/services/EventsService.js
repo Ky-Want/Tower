@@ -42,7 +42,7 @@ class EventsService {
 
   async getAllEvents(query) {
     const events = await dbContext.Event.find({
-      archived: false,
+      isCanceled: false,
       ...query,
     }).populate('creator', 'name picture')
     return events
