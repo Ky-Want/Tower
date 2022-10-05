@@ -1,6 +1,8 @@
 <template>
-  <div>
-
+  <div class="card">
+    <div class="card-body">
+      <img :src="events.coverImg" alt="">
+    </div>
   </div>
 </template>
 

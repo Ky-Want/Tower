@@ -1,19 +1,19 @@
 <template>
   <div>
     This is the home page
-    <Events />
+    <!-- <EventsCard v-for="e in events" :key="e.id" :event="e" /> -->
   </div>
 </template>
 
 
 
 <script>
-import Events from "../components/Events.vue";
+import EventsCard from "../components/EventsCard.vue";
 export default {
   setup() {
     return {};
   },
-  components: { Events }
+  components: { EventsCard }
 }
 </script>
 
