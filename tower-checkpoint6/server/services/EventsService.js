@@ -5,17 +5,23 @@ import { EventSchema } from "../models/Event.js";
 
 
 class EventsService {
-  // async archiveEvent(id, userInfo) {
-  //   const event = await this.getEventById(id)
+  createEvent(body) {
+    throw new Error("Method not implemented.");
+  }
 
-  //   if (event.creatorId.toString() != userInfo.id) {
-  //     throw new Forbidden('No Swiping 🦊 events that are not yours')
-  //   }
-  //   // soft delete
-  //   event.archived = true
-  //   await event.save()
-  //   return event
-  // }
+
+
+  async cancelEvent(id, userInfo) {
+    const event = await this.getEventById(id)
+
+    if (event.creatorId.toString() != userInfo.id) {
+      throw new Forbidden('No Swiping 🦊 events that are not yours')
+    }
+    // soft delete
+    event.archived = true
+    await event.save()
+    return event
+  }
 
 
 

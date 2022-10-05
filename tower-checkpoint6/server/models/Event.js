@@ -10,7 +10,8 @@ export const EventSchema = new Schema(
     coverImg: { type: String },
     location: { type: String },
     capacity: { type: Number },
-    startDate: { type: Date }
+    startDate: { type: Date },
+    archived: { type: Boolean, default: false }
   },
   { timestamps: true, toJSON: { virtuals: true } },
 )
