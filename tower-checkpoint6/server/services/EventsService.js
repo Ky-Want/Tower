@@ -1,6 +1,5 @@
 import { BadRequest, Forbidden } from "@bcwdev/auth0provider/lib/Errors.js";
 import { dbContext } from "../db/DbContext.js";
-import { EventSchema } from "../models/Event.js";
 
 
 
@@ -27,14 +26,13 @@ class EventsService {
     if (!event) {
       throw new BadRequest('Invalid or Bad Event Id')
     }
-
     return event
   }
 
 
+
   async createEvent(eventData) {
     const event = await dbContext.Event.create(eventData)
-    // await event.populate('profile', 'name picture')
     return event
   }
 
@@ -55,6 +53,28 @@ class EventsService {
     if (event.isCanceled) {
       throw new BadRequest('The event is canceled')
     }
+    return event
+  }
+
+
+
+  async editEvent(eventData, userInfo) {
+    const event = await this.getEventById(eventData.id)
+
+    // @ts-ignore
+    if (userInfo.id != event.creatorId.toString()) {
+      throw new Forbidden('This is not your event.')
+    }
+    event.name = eventData.name || event.name
+    event.description = eventData.description || event.description
+    event.location = eventData.location || event.location
+    event.capacity = eventData.capacity || event.capacity
+    event.isCanceled = eventData.isCanceled || event.isCanceled
+    event.startDate = eventData.startDate || event.startDate
+    event.coverImg = eventData.coverImg || event.coverImg
+
+    await event.save()
+
     return event
   }
 }

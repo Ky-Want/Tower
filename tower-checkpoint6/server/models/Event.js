@@ -4,7 +4,6 @@ const ObjectId = Schema.Types.ObjectId
 
 export const EventSchema = new Schema(
   {
-    // id: [{ type: String }],
     creatorId: { type: ObjectId, required: true },
     name: { type: String, required: true },
     description: { type: String },
