@@ -50,13 +50,13 @@ class EventsService {
 
 
 
-  // async getEventIfNotArchived(eventId) {
-  //   const event = await this.getEventById(eventId)
-  //   if (event.archived) {
-  //     throw new BadRequest('The event is archived')
-  //   }
-  //   return event
-  // }
+  async getEventIfNotCanceled(eventId) {
+    const event = await this.getEventById(eventId)
+    if (event.isCanceled) {
+      throw new BadRequest('The event is canceled')
+    }
+    return event
+  }
 }
 
 
