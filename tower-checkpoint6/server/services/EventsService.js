@@ -58,18 +58,17 @@ class EventsService {
 
 
 
-  async editEvent(eventData, userInfo) {
-    const event = await this.getEventById(eventData.id)
+  async editEvent(eventId, eventData, userInfo) {
+    const event = await this.getEventById(eventId)
 
     // @ts-ignore
-    if (userInfo.id != event.creatorId.toString()) {
+    if (userInfo.id != event.creatorId.toString() || event.isCanceled == true) {
       throw new Forbidden('This is not your event.')
     }
     event.name = eventData.name || event.name
     event.description = eventData.description || event.description
     event.location = eventData.location || event.location
     event.capacity = eventData.capacity || event.capacity
-    event.isCanceled = eventData.isCanceled || event.isCanceled
     event.startDate = eventData.startDate || event.startDate
     event.coverImg = eventData.coverImg || event.coverImg
 
