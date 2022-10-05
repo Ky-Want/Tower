@@ -1,17 +1,19 @@
 import mongoose from 'mongoose'
 const Schema = mongoose.Schema
+const ObjectId = Schema.Types.ObjectId
 
 export const EventSchema = new Schema(
   {
-    id: [{ type: String }],
-    creatorId: { type: Object, required: true },
+    // id: [{ type: String }],
+    creatorId: { type: ObjectId, required: true },
     name: { type: String, required: true },
     description: { type: String },
     coverImg: { type: String },
     location: { type: String },
     capacity: { type: Number },
     startDate: { type: Date },
-    archived: { type: Boolean, default: false }
+    isCanceled: { type: Boolean, default: false },
+    type: { type: String, enum: ['concert', 'convention', 'sport', 'digital'] }
   },
   { timestamps: true, toJSON: { virtuals: true } },
 )

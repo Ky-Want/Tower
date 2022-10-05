@@ -5,20 +5,15 @@ import { EventSchema } from "../models/Event.js";
 
 
 class EventsService {
-  createEvent(body) {
-    throw new Error("Method not implemented.");
-  }
-
-
-
   async cancelEvent(id, userInfo) {
     const event = await this.getEventById(id)
 
+    // @ts-ignore
     if (event.creatorId.toString() != userInfo.id) {
-      throw new Forbidden('No Swiping 🦊 events that are not yours')
+      throw new Forbidden('No canceling events that are not yours')
     }
     // soft delete
-    event.archived = true
+    event.isCanceled = true
     await event.save()
     return event
   }
@@ -37,12 +32,11 @@ class EventsService {
   }
 
 
-  // async createEvent(eventData) {
-  //   const event = await dbContext.Event.create(eventData)
-  //   await event.populate('creator', 'name picture')
-  //   await eventCollaboratorsService.addCollaboratorToEvent(event.id, eventData.creatorId)
-  //   return event
-  // }
+  async createEvent(eventData) {
+    const event = await dbContext.Event.create(eventData)
+    // await event.populate('profile', 'name picture')
+    return event
+  }
 
 
 
