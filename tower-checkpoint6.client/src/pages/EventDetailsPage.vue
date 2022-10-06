@@ -57,7 +57,6 @@ import EventCard from '../components/EventCard.vue';
 import DeleteEvent from "../components/DeleteEvent.vue";
 import { ticketsService } from "../services/TicketsService.js";
 import CommentsCard from "../components/CommentsCard.vue";
-import EventDetails from "../components/EventDetails.vue";
 
 
 
@@ -92,8 +91,9 @@ export default {
     });
 
 
+
+
     return {
-      account: computed(() => AppState.account),
       event: computed(() => AppState.activeEvents),
 
 
@@ -107,7 +107,7 @@ export default {
       }
     };
   },
-  components: { EventCard, DeleteEvent, CommentsCard, EventDetails }
+  components: { EventCard, DeleteEvent, CommentsCard }
 }
 </script>
 
@@ -118,15 +118,5 @@ export default {
 <style lang="scss" scoped>
 .text-green {
   color: green;
-}
-
-.commentBtn {
-  height: 2rem;
-  width: 8rem;
-}
-
-.comment-pic {
-  height: 4rem;
-  width: 4rem;
 }
 </style>

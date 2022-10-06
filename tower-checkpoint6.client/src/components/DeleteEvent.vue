@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex justify-content-end mt-3">
+  <div v-if="event.creatorId == account.id" class="d-flex justify-content-end mt-3">
     <i class="fa-solid fa-trash-can selectable"></i>
   </div>
 </template>
@@ -8,11 +8,15 @@
 
 
 <script>
+import { computed } from "@vue/reactivity";
+import { AppState } from "../AppState.js";
+
 export default {
 
   setup() {
-    return {
 
+    return {
+      account: computed(() => AppState.account),
     }
   }
 }

@@ -40,5 +40,13 @@ export default {
 
 
 <style lang="scss" scoped>
+.comment-pic {
+  height: 4rem;
+  width: 4rem;
+}
 
+.commentBtn {
+  height: 2rem;
+  width: 8rem;
+}
 </style>
