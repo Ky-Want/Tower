@@ -5,6 +5,8 @@ const ObjectId = Schema.Types.ObjectId
 
 export const TicketSchema = new Schema(
   {
+    id: { type: String, required: true },
+    profile: { type: ObjectId, required: true },
     eventId: { type: ObjectId, required: true },
     accountId: { type: ObjectId, required: true },
   },

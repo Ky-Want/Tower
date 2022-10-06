@@ -155,12 +155,11 @@ export default {
       async handleSubmit() {
         try {
           const eventData = editable.value
-          await eventsService.createEvent(eventData)
+          let newEvent = await eventsService.createEvent(eventData)
 
-          // FIXME: params id is having issues?
           router.push({
             name: "EventDetails",
-            params: { id: editable.id }
+            params: { id: newEvent.id }
           });
 
           console.log('Sending form');
