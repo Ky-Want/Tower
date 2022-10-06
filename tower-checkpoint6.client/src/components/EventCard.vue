@@ -1,7 +1,9 @@
 <template>
   <div class="mt-3 col-3">
     <div class="card px-2 py-2">
-      <img :src="event.coverImg" :alt="event.creator.name" class="img-fluid event-cover rounded selectable">
+      <router-link :to="{name: 'EventDetails', params: {id: event.id}} ">
+        <img :src="event.coverImg" alt="Event image" class="img-fluid event-cover rounded selectable">
+      </router-link>
 
       <div>
         <div class="pb-1">
@@ -47,6 +49,7 @@ export default {
   props: {
     event: {
       type: TowerEvent,
+      required: true
     }
   },
 

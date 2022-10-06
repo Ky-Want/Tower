@@ -90,17 +90,6 @@ export default {
 
 
 
-      // async deleteEvent(id) {
-      //   try {
-      //     Pop.confirm('[Are you sure you want to delete this event?]')
-      //     const yes = await Pop.confirm('Delete this Event?')
-      //     if (!yes) { return }
-      //     await eventsService.deleteEvent(id)
-      //   } catch (error) {
-      //     Pop.error(error, '[Deleting event: Home Page]')
-      //   }
-      // },
-
       async createEvent(id) {
         const res = await api.post('/api/events', eventData)
         AppState.events.push(new Event(res.data))

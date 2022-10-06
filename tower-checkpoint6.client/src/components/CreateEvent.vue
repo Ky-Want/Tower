@@ -15,147 +15,124 @@
 
   <!-- SECTION: create concert form -->
   <div v-if="editable.eventType == 'concert'">
-    <div class="form-group">
-      <label for="name">Name:</label>
-      <input type="text" v-model="editable.activeEvents.name" placeholder="Name" required class="form-control">
+    <div class="form-group mb-3">
+      <input type="text" v-model="editable.name" placeholder="Concert Name" required class="form-control">
     </div>
 
-    <div class="form-group">
-      <label for="location">Location:</label>
-      <input type="text" v-model="editable.events.location" placeholder="Location" required class="form-control">
+    <div class="form-group mb-3">
+      <input type="text" v-model="editable.location" placeholder="Location" required class="form-control">
     </div>
 
-    <div class="form-group">
-      <label for="coverImg">Cover Image:</label>
-      <input type="url" v-model="editable.events.coverImg" placeholder="https://youknow.com" class="form-control">
+    <div class="form-group mb-3">
+      <input type="url" v-model="editable.coverImg" placeholder="https://youknow.com" class="form-control">
     </div>
 
-    <div class="form-group">
-      <label for="capacity">Capacity:</label>
-      <input type="number" v-model="editable.events.capacity" placeholder="Capacity" required class="form-control"
-        min="0">
+    <div class="form-group mb-3">
+      <input type="number" v-model="editable.capacity" placeholder="Capacity" required class="form-control" min="0">
     </div>
 
-    <div class="form-group">
-      <label for="startDate">Start Date:</label>
-      <input type="number" v-model="editable.events.startDate" placeholder="Date" required class="form-control">
+    <div class="form-group mb-3">
+      <input type="date" v-model="editable.startDate" placeholder="month/day/year" required class="form-control">
     </div>
 
-    <div class="form-group">
-      <label for="description">Description:</label>
-      <textarea v-model="editable.events.description" placeholder="description" class="form-control"
-        rows="4"></textarea>
+    <div class="form-group mb-3">
+      <textarea v-model="editable.description" placeholder="description" class="form-control" rows="4"></textarea>
+    </div>
+    <div class="d-flex justify-content-center">
+      <button class="mb-5" type="submit" style=" width: 20vw;" @click="handleSubmit()">Post</button>
     </div>
   </div>
 
 
   <!-- SECTION: create convention form -->
   <div v-if="editable.eventType == 'convention'">
-    <div class="form-group">
-      <label for="name">Name:</label>
-      <input type="text" v-model="editable.events.name" placeholder="Name" required class="form-control">
+    <div class="form-group mb-3">
+      <input type="text" v-model="editable.name" placeholder="Convention Name" required class="form-control">
     </div>
 
-    <div class="form-group">
-      <label for="location">Location:</label>
-      <input type="text" v-model="editable.events.location" placeholder="Location" required class="form-control">
+    <div class="form-group mb-3">
+      <input type="text" v-model="editable.location" placeholder="Location" required class="form-control">
     </div>
 
-    <div class="form-group">
-      <label for="coverImg">Cover Image:</label>
-      <input type="url" v-model="editable.events.coverImg" placeholder="https://youknow.com" class="form-control">
+    <div class="form-group mb-3">
+      <input type="url" v-model="editable.coverImg" placeholder="https://youknow.com" class="form-control">
     </div>
 
-    <div class="form-group">
-      <label for="capacity">Capacity:</label>
-      <input type="number" v-model="editable.events.capacity" placeholder="Capacity" required class="form-control"
-        min="0">
+    <div class="form-group mb-3">
+      <input type="number" v-model="editable.capacity" placeholder="Capacity" required class="form-control" min="0">
     </div>
 
-    <div class="form-group">
-      <label for="startDate">Start Date:</label>
-      <input type="number" v-model="editable.events.startDate" placeholder="Date" required class="form-control">
+    <div class="form-group mb-3">
+      <input type="date" v-model="editable.startDate" placeholder="month/day/year" required class="form-control">
     </div>
 
-    <div class="form-group">
-      <label for="description">Description:</label>
-      <textarea v-model="editable.events.description" placeholder="description" class="form-control"
-        rows="4"></textarea>
+    <div class="form-group mb-3">
+      <textarea v-model="editable.description" placeholder="description" class="form-control" rows="4"></textarea>
+    </div>
+    <div class="d-flex justify-content-center">
+      <button class="mb-5" type="submit" style="width: 20vw;" @click="handleSubmit()">Post</button>
     </div>
   </div>
+
 
   <!-- SECTION: create sport form -->
   <div v-if="editable.eventType == 'sport'">
-    <div class="form-group">
-      <label for="name">Name:</label>
-      <input type="text" v-model="editable.events.name" placeholder="Name" required class="form-control">
+    <div class="form-group mb-3">
+      <input type="text" v-model="editable.name" placeholder="Sport Name" required class="form-control">
     </div>
 
-    <div class="form-group">
-      <label for="location">Location:</label>
-      <input type="text" v-model="editable.events.location" placeholder="Location" required class="form-control">
+    <div class="form-group mb-3">
+      <input type="text" v-model="editable.location" placeholder="Location" required class="form-control">
     </div>
 
-    <div class="form-group">
-      <label for="coverImg">Cover Image:</label>
-      <input type="url" v-model="editable.events.coverImg" placeholder="https://youknow.com" class="form-control">
+    <div class="form-group mb-3">
+      <input type="url" v-model="editable.coverImg" placeholder="https://youknow.com" class="form-control">
     </div>
 
-    <div class="form-group">
-      <label for="capacity">Capacity:</label>
-      <input type="number" v-model="editable.events.capacity" placeholder="Capacity" required class="form-control"
-        min="0">
+    <div class="form-group mb-3">
+      <input type="number" v-model="editable.capacity" placeholder="Capacity" required class="form-control" min="0">
     </div>
 
-    <div class="form-group">
-      <label for="startDate">Start Date:</label>
-      <input type="number" v-model="editable.events.startDate" placeholder="Date" required class="form-control">
+    <div class="form-group mb-3">
+      <input type="date" v-model="editable.startDate" placeholder="month/day/year" required class="form-control">
     </div>
 
-    <div class="form-group">
-      <label for="description">Description:</label>
-      <textarea v-model="editable.events.description" placeholder="description" class="form-control"
-        rows="4"></textarea>
+    <div class="form-group mb-3">
+      <textarea v-model="editable.description" placeholder="description" class="form-control" rows="4"></textarea>
+    </div>
+    <div class="d-flex justify-content-center">
+      <button class="mb-5" type="submit" style=" width: 20vw;" @click="handleSubmit()">Post</button>
     </div>
   </div>
 
+
   <!-- SECTION: create digital form -->
   <div v-if="editable.eventType == 'digital'">
-    <div class="form-group">
-      <label for="name">Name:</label>
-      <input type="text" v-model="editable.events.name" placeholder="Name" required class="form-control">
+    <div class="form-group mb-3">
+      <input type="text" v-model="editable.name" placeholder="Digital Name" required class="form-control">
     </div>
 
-    <div class="form-group">
-      <label for="location">Location:</label>
-      <input type="text" v-model="editable.events.location" placeholder="Location" required class="form-control">
+    <div class="form-group mb-3">
+      <input type="text" v-model="editable.location" placeholder="Location" required class="form-control">
     </div>
 
-    <div class="form-group">
-      <label for="coverImg">Cover Image:</label>
-      <input type="url" v-model="editable.events.coverImg" placeholder="https://youknow.com" class="form-control">
+    <div class="form-group mb-3">
+      <input type="url" v-model="editable.coverImg" placeholder="https://youknow.com" class="form-control">
     </div>
 
-    <div class="form-group">
-      <label for="capacity">Capacity:</label>
-      <input type="number" v-model="editable.events.capacity" placeholder="Capacity" required class="form-control"
-        min="0">
+    <div class="form-group mb-3">
+      <input type="number" v-model="editable.capacity" placeholder="Capacity" required class="form-control" min="0">
     </div>
 
-    <div class="form-group">
-      <label for="startDate">Start Date:</label>
-      <input type="number" v-model="editable.events.startDate" placeholder="Date" required class="form-control">
+    <div class="form-group mb-3">
+      <input type="date" v-model="editable.startDate" placeholder="month/day/year" required class="form-control">
     </div>
 
-    <div class="form-group">
-      <label for="description">Description:</label>
-      <textarea v-model="editable.events.description" placeholder="description" class="form-control"
-        rows="4"></textarea>
+    <div class="form-group mb-3">
+      <textarea v-model="editable.description" placeholder="description" class="form-control" rows="4"></textarea>
     </div>
-
-
     <div class="d-flex justify-content-center">
-      <button class="mb-5" type="submit" style=" width: 20vw;">Post</button>
+      <button class="mb-5" type="submit" style=" width: 20vw;" @click="handleSubmit()">Post</button>
     </div>
   </div>
 </template>
@@ -163,24 +140,31 @@
 
 <script>
 import { ref } from "vue"
+import { useRouter } from "vue-router"
 import { eventsService } from "../services/EventsService.js"
 import Pop from "../utils/Pop.js"
 
 
 export default {
   setup() {
-    const editable = ref({
-      listing: {}
-    })
+    const editable = ref({});
+    const router = useRouter();
+
     return {
       editable,
       async handleSubmit() {
         try {
           const eventData = editable.value
           await eventsService.createEvent(eventData)
-          editable.value = {
-            listing: {}
-          }
+
+          // FIXME: params id is having issues?
+          router.push({
+            name: "EventDetails",
+            params: { id: editable.id }
+          });
+
+          console.log('Sending form');
+
         } catch (error) {
           Pop.error(error, '[Submitting Event Form]')
         }
