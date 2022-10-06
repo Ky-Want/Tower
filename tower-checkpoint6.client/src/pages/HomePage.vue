@@ -36,10 +36,11 @@
       </strong>
     </div>
 
+    <CreateEvent />
+
     <div class="row d-flex gap-5 mb-5 justify-content-center">
       <EventCard v-for="e in events" :key="e.id" :event="e" />
     </div>
-
   </div>
 </template>
 
@@ -54,6 +55,7 @@ import { onMounted } from "vue";
 import { computed } from "@vue/reactivity";
 import { AppState } from "../AppState.js";
 import { api } from "../services/AxiosService.js";
+import CreateEvent from "../components/CreateEvent.vue";
 
 
 export default {
@@ -74,10 +76,7 @@ export default {
     })
 
     return {
-      // editable,
       events: computed(() => AppState.events.filter(a => a.name.toUpperCase())),
-      // .includes(editable.value.toUpperCase()))),
-      // events: computed(() => AppState.events),
 
 
 
@@ -102,15 +101,15 @@ export default {
       //   }
       // },
 
-      // async createEvent(id) {
-      //   const res = await api.post('/api/events', eventData)
-      //   AppState.events.push(new Event(res.data))
+      async createEvent(id) {
+        const res = await api.post('/api/events', eventData)
+        AppState.events.push(new Event(res.data))
 
-      //   console.log('creating event: Home Page, ', createEvent(id));
-      // }
+        console.log('creating event: Home Page, ', createEvent(id));
+      }
     };
   },
-  components: { Navbar, EventCard }
+  components: { Navbar, EventCard, CreateEvent }
 }
 </script>
 

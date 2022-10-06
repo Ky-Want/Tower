@@ -16,19 +16,9 @@ class EventsService {
           type: type
         }
       })
-
     }
-    console.log('logging get Events in service', res.data);
     AppState.events = res.data.map(a => new TowerEvent(a))
   }
-
-
-  // async getEvents() {
-  //   AppState.events = []
-  //   const res = await api.get('api/events')
-
-  //   console.log("Getting events from service", res.data);
-  // }
 
 
 
@@ -57,32 +47,6 @@ class EventsService {
     AppState.events.push(new TowerEvent(res.data))
 
     console.log('creating event: Events Service');
-  }
-
-
-
-  async changePage(pageUrl) {
-    const res = await api.get(pageUrl)
-    logger.log(res.data)
-
-    AppState.events = res.data.events.map(e => new TowerEvent(e))
-    AppState.page = res.data.page
-
-    AppState.nextPage = res.data.older
-    AppState.previousPage = res.data.newer
-  }
-
-
-
-  async changeEventPage(pageUrl) {
-    const res = await api.get(pageUrl)
-    logger.log(res.data)
-
-    AppState.activeEvent = res.data.events.map(e => new TowerEvent(e))
-    AppState.page = res.data.page
-
-    AppState.eventNextPage = res.data.older
-    AppState.eventPreviousPage = res.data.newer
   }
 }
 
