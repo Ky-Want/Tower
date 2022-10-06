@@ -5,8 +5,8 @@ const ObjectId = Schema.Types.ObjectId
 
 export const CommentSchema = new Schema(
   {
-    creatorId: { type: ObjectId, required: true },
-    eventId: { type: ObjectId, required: true },
+    creatorId: { type: ObjectId, required: true, ref: 'Account' },
+    eventId: { type: ObjectId, required: true, ref: 'Event' },
     body: { type: String },
     isAttending: { type: Boolean }
   },
@@ -18,5 +18,5 @@ CommentSchema.virtual('creator', {
   localField: 'creatorId',
   foreignField: '_id',
   justOne: true,
-  ref: 'Profile'
+  ref: 'Account'
 })

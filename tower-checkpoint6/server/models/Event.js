@@ -4,7 +4,7 @@ const ObjectId = Schema.Types.ObjectId
 
 export const EventSchema = new Schema(
   {
-    creatorId: { type: ObjectId, required: true },
+    creatorId: { type: ObjectId, required: true, ref: 'Account' },
     name: { type: String, required: true },
     description: { type: String },
     coverImg: { type: String },
@@ -22,5 +22,5 @@ EventSchema.virtual('creator', {
   localField: 'creatorId',
   foreignField: '_id',
   justOne: true,
-  ref: 'Profile'
+  ref: 'Account'
 })
