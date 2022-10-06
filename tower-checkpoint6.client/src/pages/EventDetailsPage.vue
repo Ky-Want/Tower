@@ -3,35 +3,37 @@
     <h2><strong>Tower</strong></h2>
   </div>
 
-  <div class="container d-flex gap-3">
-    <div class="col-5 card rounded">
-      <img :src="event.coverImg" :alt="event.name" class="rounded img-fluid">
+  <div class="container d-flex gap-3 bg-grey p-5 rounded">
+    <div class="col-5 rounded elevation-4 rounded">
+      <img :src="event.coverImg" :alt="event.name" class="img-fluid rounded">
     </div>
 
     <div class="col-7">
-      <div class="mb-4 d-flex justify-content-between">
-        <p>{{event.name}}</p>
+      <div class="mb-3 d-flex justify-content-between">
+        <h3>{{event.name}}</h3>
         <p>Starting Date: {{new Date(event.startDate).toLocaleDateString()}}</p>
       </div>
 
-      <div class="mb-4 d-flex justify-content-between">
-        <p>{{event.location}}</p>
+      <div class="mb-3 d-flex justify-content-between">
+        <em>{{event.location}}</em>
         <p>Starting Time: {{new Date(event.startDate).toLocaleTimeString()}}</p>
       </div>
 
-      <div>
-        <strong><em>{{event.description}}</em></strong>
+      <div class="mb-3 pb-2">
+        <strong>{{event.description}}</strong>
       </div>
 
-      <div class="mt-5 pt-5 d-flex justify-content-between">
-        <p class="text-success">{{event.capacity}} spots left</p>
+      <div class="d-flex justify-content-between">
+        <p class="text-green"><strong>{{event.capacity}} spots left</strong></p>
         <button class="text-dark bg-primary">ATTEND</button>
       </div>
+
+      <DeleteEvent />
     </div>
   </div>
 
 
-  <!-- SECTION: add comments here -->
+  <!-- TODO: add comments here -->
 </template>
 
 
@@ -44,6 +46,7 @@ import { AppState } from '../AppState.js';
 import { eventsService } from "../services/EventsService.js";
 import Pop from "../utils/Pop.js";
 import EventCard from '../components/EventCard.vue';
+import DeleteEvent from "../components/DeleteEvent.vue";
 
 
 
@@ -69,20 +72,7 @@ export default {
       event: computed(() => AppState.activeEvents)
     };
   },
-
-
-
-  async deleteEvent(id) {
-    try {
-      Pop.confirm('[Are you sure you want to delete this event?]')
-      const yes = await Pop.confirm('Delete this Event?')
-      if (!yes) { return }
-      await eventsService.deleteEvent(id)
-    } catch (error) {
-      Pop.error(error, '[Deleting event: Home Page]')
-    }
-  },
-  components: { EventCard }
+  components: { EventCard, DeleteEvent }
 }
 </script>
 
@@ -91,5 +81,7 @@ export default {
 
 
 <style lang="scss" scoped>
-
+.text-green {
+  color: green;
+}
 </style>

@@ -60,8 +60,6 @@ import CreateEvent from "../components/CreateEvent.vue";
 
 export default {
   setup() {
-    // const editable = ref('')
-
     async function getEvents() {
       try {
         await eventsService.getEvents();
@@ -70,14 +68,14 @@ export default {
       }
     }
 
-
     onMounted(() => {
       getEvents();
     })
 
+
+
     return {
       events: computed(() => AppState.events.filter(a => a.name.toUpperCase())),
-
 
 
       async getType(type) {

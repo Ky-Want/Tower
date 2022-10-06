@@ -39,10 +39,6 @@
 
 
 <script>
-import { AppState } from "../AppState.js";
-import { computed } from "@vue/reactivity";
-import Pop from "../utils/Pop.js";
-import { eventsService } from "../services/EventsService.js";
 import { TowerEvent } from "../models/TowerEvent.js";
 
 export default {
@@ -56,17 +52,7 @@ export default {
 
   setup(props) {
     return {
-      account: computed(() => AppState.account),
 
-
-      async deleteEvent(id) {
-        try {
-          await Pop.confirm('Are you sure you want to delete this Event?')
-          await eventsService.deleteEvent(id)
-        } catch (error) {
-          console.error(error, 'Deleting Post: Event Card')
-        }
-      }
     }
   }
 }

@@ -30,7 +30,7 @@ class EventsService {
 
 
 
-  async deleteEvent(id) {
+  async cancelEvent(id) {
     const res = await api.delete(`api/events/${id}`)
     AppState.events = AppState.events.filter(c => c.id != id)
   }
