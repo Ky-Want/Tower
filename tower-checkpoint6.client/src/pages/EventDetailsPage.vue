@@ -3,7 +3,7 @@
     <h2><strong>Tower</strong></h2>
   </div>
 
-  <!-- SECTION: event details -->
+  <!-- SECTION: event details + delete button -->
   <div class="container d-flex gap-3 bg-grey p-5 rounded mb-5">
     <div class="col-5 rounded elevation-4 rounded">
       <img :src="event.coverImg" :alt="event.name" class="img-fluid rounded">
@@ -28,7 +28,9 @@
         <button class="text-dark bg-primary">ATTEND</button>
       </div>
 
-      <DeleteEvent @click="cancelEvent(event.id)" />
+      <div @click="cancelEvent(event.id)" v-if="event.creatorId == account.id" class="d-flex justify-content-end mt-3">
+        <i class="fa-solid fa-trash-can selectable"></i>
+      </div>
     </div>
   </div>
 
@@ -94,7 +96,9 @@ export default {
 
 
     return {
+      ticket: computed(() => AppState.tickets),
       event: computed(() => AppState.activeEvents),
+      account: computed(() => AppState.account),
 
 
       async cancelEvent(id) {
@@ -105,6 +109,7 @@ export default {
           console.error(error, 'Deleting Post: Event Details page')
         }
       }
+
     };
   },
   components: { EventCard, DeleteEvent, CommentsCard }
