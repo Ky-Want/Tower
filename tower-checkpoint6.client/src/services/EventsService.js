@@ -31,6 +31,7 @@ class EventsService {
 
 
   async cancelEvent(id) {
+    // FIXME: id is coming back undefined
     const res = await api.delete(`api/events/${id}`)
     AppState.events = AppState.events.filter(c => c.id != id)
   }

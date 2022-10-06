@@ -28,7 +28,7 @@
         <button class="text-dark bg-primary">ATTEND</button>
       </div>
 
-      <DeleteEvent />
+      <DeleteEvent @click="cancelEvent(id)" />
     </div>
   </div>
 
@@ -69,7 +69,18 @@ export default {
       getEventById();
     });
     return {
-      event: computed(() => AppState.activeEvents)
+      account: computed(() => AppState.account),
+      event: computed(() => AppState.activeEvents),
+
+
+      async cancelEvent(id) {
+        try {
+          await Pop.confirm('Are you sure you want to delete this Event?')
+          await eventsService.cancelEvent(id)
+        } catch (error) {
+          console.error(error, 'Deleting Post: Event Details page')
+        }
+      }
     };
   },
   components: { EventCard, DeleteEvent }
