@@ -8,11 +8,8 @@
     <div class="col-5 rounded elevation-4 rounded">
       <img :src="event.coverImg" :alt="event.name" class="img-fluid rounded">
     </div>
-
     <div class="col-7">
-
       <EventDetails />
-
       <DeleteEvent @click="cancelEvent(id)" />
     </div>
   </div>
