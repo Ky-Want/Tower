@@ -3,37 +3,30 @@
     <h2><strong>Tower</strong></h2>
   </div>
 
-  <div class="container d-flex gap-3 bg-grey p-5 rounded">
+  <!-- SECTION: event details -->
+  <div class="container d-flex gap-3 bg-grey p-5 rounded mb-5">
     <div class="col-5 rounded elevation-4 rounded">
       <img :src="event.coverImg" :alt="event.name" class="img-fluid rounded">
     </div>
 
     <div class="col-7">
-      <div class="mb-3 d-flex justify-content-between">
-        <h3>{{event.name}}</h3>
-        <p>Starting Date: {{new Date(event.startDate).toLocaleDateString()}}</p>
-      </div>
 
-      <div class="mb-3 d-flex justify-content-between">
-        <em>{{event.location}}</em>
-        <p>Starting Time: {{new Date(event.startDate).toLocaleTimeString()}}</p>
-      </div>
-
-      <div class="mb-3 pb-2">
-        <strong>{{event.description}}</strong>
-      </div>
-
-      <div class="d-flex justify-content-between">
-        <p class="text-green"><strong>{{event.capacity}} spots left</strong></p>
-        <button class="text-dark bg-primary">ATTEND</button>
-      </div>
+      <EventDetails />
 
       <DeleteEvent @click="cancelEvent(id)" />
     </div>
   </div>
 
 
-  <!-- TODO: add comments here -->
+  <!-- SECTION: ticket holders pics -->
+  <div class="container mt-5 mb-5">
+    <div class="bg-dark rounded p-3">
+      <!-- {{tickets.account.picture}} -->
+      Attendees pics will go here
+    </div>
+  </div>
+
+  <CommentsCard />
 </template>
 
 
@@ -47,6 +40,9 @@ import { eventsService } from "../services/EventsService.js";
 import Pop from "../utils/Pop.js";
 import EventCard from '../components/EventCard.vue';
 import DeleteEvent from "../components/DeleteEvent.vue";
+import { ticketsService } from "../services/TicketsService.js";
+import CommentsCard from "../components/CommentsCard.vue";
+import EventDetails from "../components/EventDetails.vue";
 
 
 
@@ -54,6 +50,15 @@ export default {
   setup() {
     const route = useRoute();
     const router = useRouter();
+
+
+    async function getTickets() {
+      try {
+        await ticketsService.getTickets()
+      } catch (error) {
+        Pop.error("Cannot find tickets")
+      }
+    }
 
 
     async function getEventById() {
@@ -65,9 +70,13 @@ export default {
         router.push({ name: "Home" });
       }
     }
+
     onMounted(() => {
       getEventById();
+      getTickets();
     });
+
+
     return {
       account: computed(() => AppState.account),
       event: computed(() => AppState.activeEvents),
@@ -83,7 +92,7 @@ export default {
       }
     };
   },
-  components: { EventCard, DeleteEvent }
+  components: { EventCard, DeleteEvent, CommentsCard, EventDetails }
 }
 </script>
 
@@ -94,5 +103,15 @@ export default {
 <style lang="scss" scoped>
 .text-green {
   color: green;
+}
+
+.commentBtn {
+  height: 2rem;
+  width: 8rem;
+}
+
+.comment-pic {
+  height: 4rem;
+  width: 4rem;
 }
 </style>
