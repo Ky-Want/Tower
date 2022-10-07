@@ -10,37 +10,10 @@ export class CommentsController extends BaseController {
       .get('', this.getAllComments)
       .get('/:id', this.getCommentById)
 
-      // .get('api/events/:id/comments', this.getEventComments)
-
       .use(Auth0Provider.getAuthorizedUserInfo)
       .post('', this.createComment)
       .delete('/:id', this.removeComment)
   }
-
-
-
-  // SECTION: creating and removing comments
-  async removeComment(req, res, next) {
-    try {
-      const comment = await commentsService.deleteComment(req.params.id, req.userInfo)
-    } catch (error) {
-      next(error)
-    }
-  }
-
-  async createComment(req, res, next) {
-    try {
-      req.body.creatorId = req.userInfo.id
-      const event = await commentsService.createComment(req.body)
-      res.send(event)
-    } catch (error) {
-      next(error)
-    }
-  }
-
-
-
-
 
 
 
@@ -63,9 +36,34 @@ export class CommentsController extends BaseController {
     }
   }
 
-  async getEventComments(req, res, next) {
+  async getCommentsByEventId(req, res, next) {
     try {
-      const eventComments = await commentsService.getEventComments()
+      const eventComments = await commentsService.getCommentsByEventId()
+    } catch (error) {
+      next(error)
+    }
+  }
+
+
+
+
+
+
+
+  // SECTION: creating and removing comments
+  async removeComment(req, res, next) {
+    try {
+      const comment = await commentsService.deleteComment(req.params.id, req.userInfo)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  async createComment(req, res, next) {
+    try {
+      req.body.creatorId = req.userInfo.id
+      const event = await commentsService.createComment(req.body)
+      res.send(event)
     } catch (error) {
       next(error)
     }

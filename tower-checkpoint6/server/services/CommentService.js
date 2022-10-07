@@ -2,7 +2,6 @@ import { dbContext } from "../db/DbContext.js"
 import { BadRequest, Forbidden } from "@bcwdev/auth0provider/lib/Errors.js";
 
 
-
 class CommentService {
   // SECTION: getting comments
   async getCommentById(id) {
@@ -20,10 +19,13 @@ class CommentService {
     }))
   }
 
-  async getEventComments() {
-    // need to access events
-    // through events get comments?
+  async getCommentsByEventId(eventId) {
+    const comments = dbContext.Comment.findById(eventId).populate('creator', 'name picture')
+    //Not sure what to do with it yet
   }
+
+
+
 
 
 

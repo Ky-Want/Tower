@@ -11,6 +11,8 @@ export class TicketsController extends BaseController {
       .get('', this.getTickets)
       .get('/:id', this.getTicketById)
 
+      // .get('/:id/tickets', this.getTicketsByEventId)
+
       .use(Auth0Provider.getAuthorizedUserInfo)
       .post('', this.createTicket)
       .delete('/:id', this.deleteTicket)
@@ -36,14 +38,30 @@ export class TicketsController extends BaseController {
     }
   }
 
-  // async getTicketsByAccountId(req, res, next) {
-  //   try {
-  //     const tickets = await ticketsService.getTicketsByAccountId(req.userInfo)
-  //     res.send(tickets)
-  //   } catch (error) {
-  //     next(error)
-  //   }
-  // }
+  async getTicketsByAccountId(req, res, next) {
+    try {
+      const tickets = await ticketsService.getTicketsByAccountId(req.userInfo)
+      res.send(tickets)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  async getTicketsByEventId(req, res, next) {
+    try {
+      const tickets = await ticketsService.getTicketsByEventId(req.eventId)
+      res.send(tickets)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+
+
+
+
+
+
 
 
 

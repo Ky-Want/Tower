@@ -1,7 +1,8 @@
 import { Auth0Provider } from "@bcwdev/auth0provider";
+import { commentsService } from "../services/CommentService.js";
 import { eventsService } from "../services/EventsService.js";
+import { ticketsService } from "../services/TicketService.js";
 import BaseController from "../utils/BaseController.js";
-
 
 
 export class EventController extends BaseController {
@@ -11,6 +12,9 @@ export class EventController extends BaseController {
       .get('', this.getAllEvents)
       .get('/:id', this.getEventById)
 
+      .get('/:id/tickets', this.getTicketsByEventId)
+      .get('/:id/comments', this.getCommentsByEventId)
+
       .use(Auth0Provider.getAuthorizedUserInfo)
       .post('', this.createEvent)
       .put('/:id', this.editEvent)
@@ -18,6 +22,25 @@ export class EventController extends BaseController {
   }
 
 
+
+  // SECTION: getting events
+  async getTicketsByEventId(req, res, next) {
+    try {
+      const eventTickets = await ticketsService.getTicketsByEventId(req.params.id)
+      res.send(eventTickets)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  async getCommentsByEventId(req, res, next) {
+    try {
+      const comments = await commentsService.getCommentsByEventId(req.params.id)
+      res.send(comments)
+    } catch (error) {
+      next(error)
+    }
+  }
 
   async getAllEvents(req, res, next) {
     try {
@@ -27,7 +50,6 @@ export class EventController extends BaseController {
       next(error)
     }
   }
-
 
   async getEventById(req, res, next) {
     try {
@@ -40,6 +62,13 @@ export class EventController extends BaseController {
 
 
 
+
+
+
+
+
+
+  // SECTION: creating/deleting/and editing events
   async createEvent(req, res, next) {
     try {
       req.body.creatorId = req.userInfo.id
@@ -51,7 +80,6 @@ export class EventController extends BaseController {
   }
 
 
-
   async cancelEvent(req, res, next) {
     try {
       const event = await eventsService.cancelEvent(req.params.id, req.userInfo)
@@ -60,7 +88,6 @@ export class EventController extends BaseController {
       next(error)
     }
   }
-
 
 
   async editEvent(req, res, next) {
