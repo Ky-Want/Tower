@@ -17,6 +17,7 @@ export class TicketsController extends BaseController {
   }
 
 
+  // SECTION: getting tickets
   async getTickets(req, res, next) {
     try {
       const tickets = await ticketsService.getAllTickets(req.query)
@@ -38,6 +39,11 @@ export class TicketsController extends BaseController {
 
 
 
+
+
+
+
+  // SECTION: creating and removing tickets
   async createTicket(req, res, next) {
     try {
       req.body.accountId = req.userInfo.id
@@ -47,7 +53,6 @@ export class TicketsController extends BaseController {
       next(error)
     }
   }
-
 
 
   async deleteTicket(req, res, next) {

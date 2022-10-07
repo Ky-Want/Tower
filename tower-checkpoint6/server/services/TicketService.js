@@ -5,6 +5,7 @@ import { eventsService } from "./EventsService.js"
 
 
 class TicketsService {
+  // SECTION: getting the tickets
   async getAllTickets(query) {
     const tickets = await dbContext.Ticket.find({
       isCanceled: false,
@@ -12,7 +13,6 @@ class TicketsService {
     }).populate('account', 'name picture')
     return tickets
   }
-
 
 
   async getTicketsByAccountId(accountId) {
@@ -23,14 +23,12 @@ class TicketsService {
   }
 
 
-
   async getTicketsByProfileId(profileId) {
     const attendees = await dbContext.Account.find({ profileId })
       .populate('profile', 'name picture')
 
     return attendees
   }
-
 
 
   async getTicketById(id) {
@@ -45,6 +43,11 @@ class TicketsService {
 
 
 
+
+
+
+
+  // SECTION: adding and removing tickets
   async addTicket(ticketData) {
     const event = await dbContext.Event.findById(ticketData.eventId)
     if (event.capacity == 0) {
@@ -63,6 +66,30 @@ class TicketsService {
   }
 
 
+  async deleteTicket(id, userInfo) {
+    const ticket = await this.getTicketById(id)
+    const event = await dbContext.Event.findById(id)
+
+    // @ts-ignore
+    if (ticket.accountId.toString() != userInfo.id) {
+      throw new Forbidden('No canceling tickets that are not yours')
+    }
+
+    // @ts-ignore
+    event.capacity++
+    await ticket.save()
+    await event.save()
+    return ticket
+  }
+
+
+
+
+
+
+
+
+  // SECTION: event attendees
   async addAttendeeToEvent(eventId, accountId) {
     await eventsService.getEventIfNotCanceled(eventId)
     const isAttendee = await this.getAttendeeForEvent(eventId, accountId)
@@ -72,11 +99,11 @@ class TicketsService {
     }
 
     const attendee = await dbContext.Account.create(eventId, accountId)
+    // @ts-ignore
     await attendee.populate('profile', 'name picture')
 
     return attendee
   }
-
 
 
   async getAttendeeForEvent(eventId, accountId) {
@@ -88,22 +115,6 @@ class TicketsService {
   }
 
 
-
-  async deleteTicket(id, userInfo) {
-    const ticket = await this.getTicketById(id)
-
-    // @ts-ignore
-    if (ticket.accountId.toString() != userInfo.id) {
-      throw new Forbidden('No canceling tickets that are not yours')
-    }
-    // soft delete
-
-    await ticket.save()
-    return ticket
-  }
-
-
-
   async removeAttendee(attendeeId, userId) {
     const attendee = await dbContext.Account.findById(attendeeId)
     if (!attendee) {
@@ -112,6 +123,7 @@ class TicketsService {
 
     // NOTE use .toString() when comparing an id from the db to an id from the client
 
+    // @ts-ignore
     const event = await eventsService.getEventById(attendee.eventId)
     // @ts-ignore
     const theLoggedInUserIsTheOwner = userId == event.creatorId.toString()
