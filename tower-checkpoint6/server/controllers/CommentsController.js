@@ -3,13 +3,14 @@ import { commentsService } from "../services/CommentService.js";
 import BaseController from "../utils/BaseController.js";
 
 
-
 export class CommentsController extends BaseController {
   constructor() {
     super('api/comments')
     this.router
       .get('', this.getAllComments)
       .get('/:id', this.getCommentById)
+
+      // .get('api/events/:id/comments', this.getEventComments)
 
       .use(Auth0Provider.getAuthorizedUserInfo)
       .post('', this.createComment)
@@ -26,7 +27,6 @@ export class CommentsController extends BaseController {
       next(error)
     }
   }
-
 
   async createComment(req, res, next) {
     try {
@@ -54,11 +54,18 @@ export class CommentsController extends BaseController {
     }
   }
 
-
   async getAllComments(req, res, next) {
     try {
       const comments = await commentsService.getAllComments(req.query)
       res.send(comments)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  async getEventComments(req, res, next) {
+    try {
+      const eventComments = await commentsService.getEventComments()
     } catch (error) {
       next(error)
     }

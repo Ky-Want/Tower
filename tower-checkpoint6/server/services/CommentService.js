@@ -13,13 +13,18 @@ class CommentService {
     }
   }
 
-
   async getAllComments(query) {
     const comments = await dbContext.Comment.find(({
       // get if not attached to a canceled event
       ...query
     }))
   }
+
+  async getEventComments() {
+    // need to access events
+    // through events get comments?
+  }
+
 
 
 
@@ -31,7 +36,6 @@ class CommentService {
     const comment = await dbContext.Comment.create(commentData)
     return comment
   }
-
 
   async deleteComment(id, userInfo) {
     const comment = await this.getCommentById(id)

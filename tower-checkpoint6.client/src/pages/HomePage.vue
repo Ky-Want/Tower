@@ -14,7 +14,7 @@
       </div>
     </div>
 
-    <div class="d-flex justify-content-center gap-5 mt-4 border border-dark rounded text-light bg-secondary">
+    <div class="col-12 mt-4 d-flex justify-content-center gap-5 rounded bg-secondary text-light border border-dark">
       <strong>
         <div class="selectable" @click="getType('')">All</div>
       </strong>
@@ -113,5 +113,9 @@ export default {
 
 .grey {
   background-color: grey;
+}
+
+.filterBar {
+  width: 50rem;
 }
 </style>

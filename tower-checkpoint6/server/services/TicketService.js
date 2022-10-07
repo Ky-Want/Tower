@@ -10,45 +10,49 @@ class TicketsService {
     const tickets = await dbContext.Ticket.find({
       isCanceled: false,
       ...query
-    }).populate('account', 'name picture')
+    }).populate('profile', 'name picture')
     return tickets
   }
 
-
-  async getTicketsByAccountId(accountId) {
-    const attendees = await dbContext.Account.find({ accountId })
-      .populate('account', 'title coverImg')
-
-    return attendees
-  }
-
-
-  async getTicketsByProfileId(profileId) {
-    const attendees = await dbContext.Account.find({ profileId })
-      .populate('profile', 'name picture')
-
-    return attendees
-  }
-
-
   async getTicketById(id) {
-    const ticket = await dbContext.Ticket.findById(id).populate('account', 'name picture')
-
-    // handle bad id
-    if (!ticket) {
-      throw new BadRequest('Invalid or Bad ticket Id.')
-    }
+    const ticket = await dbContext.Ticket.findById(id).populate('profile', 'name picture')
+    if (!ticket) { throw new BadRequest('Invalid or Bad ticket Id.') }
     return ticket
   }
 
+  async getTicketsByAccountId(accountId) {
+    const tickets = await dbContext.Account.find({ accountId })
+      .populate('profile', 'name picture')
+    return tickets
+  }
+
+  async getAttendeesByEventId(accountId) {
+    const attendees = await dbContext.Account.find({ accountId }).populate('profile', 'name picture')
+    return attendees
+  }
+
+  // async getTicketsByProfileId(profileId) {
+  //   const tickets = await dbContext.Account.find({ profileId })
+  //     .populate('profile', 'name picture')
+  //   return tickets
+  // }
+
+  async getAttendeeForEvent(eventId, accountId) {
+    const attendee = await dbContext.Account.findOne({ eventId, accountId })
+      .populate('profile', 'name picture')
+      .populate('event', 'title coverImg')
+    return attendee
+  }
 
 
 
 
 
 
-  // SECTION: adding and removing tickets
-  async addTicket(ticketData) {
+
+
+  // SECTION: creating and removing tickets
+  async createTicket(ticketData) {
     const event = await dbContext.Event.findById(ticketData.eventId)
     if (event.capacity == 0) {
       throw new BadRequest('No tickets available.')
@@ -68,7 +72,7 @@ class TicketsService {
 
   async deleteTicket(id, userInfo) {
     const ticket = await this.getTicketById(id)
-    const event = await dbContext.Event.findById(id)
+    const event = await dbContext.Event.findById(ticket.eventId)
 
     // @ts-ignore
     if (ticket.accountId.toString() != userInfo.id) {
@@ -77,7 +81,8 @@ class TicketsService {
 
     // @ts-ignore
     event.capacity++
-    await ticket.save()
+
+    await ticket.remove()
     await event.save()
     return ticket
   }
@@ -89,48 +94,35 @@ class TicketsService {
 
 
 
-  // SECTION: event attendees
+  // SECTION: add and remove attendees
   async addAttendeeToEvent(eventId, accountId) {
-    await eventsService.getEventIfNotCanceled(eventId)
     const isAttendee = await this.getAttendeeForEvent(eventId, accountId)
+    const attendee = await dbContext.Account.create(eventId, accountId)
+
+    await eventsService.getEventIfNotCanceled(eventId)
+    await attendee.populate('profile', 'name picture')
 
     if (isAttendee) {
       return isAttendee
     }
 
-    const attendee = await dbContext.Account.create(eventId, accountId)
-    // @ts-ignore
-    await attendee.populate('profile', 'name picture')
-
     return attendee
   }
-
-
-  async getAttendeeForEvent(eventId, accountId) {
-    const attendee = await dbContext.Account.findOne({ eventId, accountId })
-      .populate('profile', 'name picture')
-      .populate('event', 'title coverImg')
-
-    return attendee
-  }
-
 
   async removeAttendee(attendeeId, userId) {
+    // NOTE use .toString() when comparing an id from the db to an id from the client
     const attendee = await dbContext.Account.findById(attendeeId)
+    const event = await eventsService.getEventById(attendee.eventId)
+    // @ts-ignore
+    const loggedInUserIsTheOwner = userId == event.creatorId.toString()
+    const loggedInUserIsTheAttendee = attendee.accountId.toString() == userId
+
+
     if (!attendee) {
       throw new BadRequest('Invalid attendee Id')
     }
 
-    // NOTE use .toString() when comparing an id from the db to an id from the client
-
-    // @ts-ignore
-    const event = await eventsService.getEventById(attendee.eventId)
-    // @ts-ignore
-    const theLoggedInUserIsTheOwner = userId == event.creatorId.toString()
-    // @ts-ignore
-    const theLoggedInUserIsTheAttendee = attendee.accountId.toString() == userId
-
-    if (!theLoggedInUserIsTheAttendee && !theLoggedInUserIsTheOwner) {
+    if (!loggedInUserIsTheAttendee && !loggedInUserIsTheOwner) {
       throw new Forbidden("You can't remove anyone but yourself.")
     }
 
