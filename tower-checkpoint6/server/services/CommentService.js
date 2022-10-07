@@ -21,8 +21,10 @@ class CommentService {
   }
 
   async getCommentsByEventId(eventId) {
-    const comments = dbContext.Comment.findById(eventId).populate('creator', 'name picture')
-    //Not sure what to do with it yet
+    const comments = await dbContext.Comment.find({ eventId })
+      .populate('creator', 'name picture')
+      .populate('event')
+    return comments
   }
 
 
@@ -37,32 +39,23 @@ class CommentService {
   // SECTION: deleting and creating comments
   async createComment(commentData) {
     const comment = await dbContext.Comment.create(commentData)
+    await comment.populate('event')
+    await comment.populate('creator', 'name picture')
     return comment
   }
 
-  async deleteComment(id, userInfo) {
-    // const comment = await commentsService.getCommentById(id)
 
-    const towerEvent = await eventsService.getEventById(id)
-    const commenter = await dbContext.Account.findById(userInfo.id)
 
-    const loggedInUserIsTheOwner = userInfo == towerEvent.toString()
-    const loggedInUserIsTheCommenter = commenter.id.toString() == userInfo
+  async deleteComment(id, userId) {
+    const comment = await dbContext.Comment.findById(id)
 
-    if (commenter.id.toString() != userInfo.id) {
-      throw new Forbidden('You may not delete comments that are not your own.')
+    // @ts-ignore
+    if (comment.creatorId.toString() != userId) {
+      throw new BadRequest('You may not delete comments that are not your own.')
     }
 
-    if (!commenter) {
-      throw new BadRequest('Invalid commenter Id')
-    }
-
-    if (!loggedInUserIsTheCommenter && !loggedInUserIsTheOwner) {
-      throw new Forbidden("You can't someone elses comment.")
-    }
-
-    // await comment.save()
-    // return comment
+    await comment.remove()
+    return 'Delete successful'
   }
 
 }

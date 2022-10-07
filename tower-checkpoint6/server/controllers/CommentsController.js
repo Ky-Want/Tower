@@ -53,7 +53,8 @@ export class CommentsController extends BaseController {
   // SECTION: creating and removing comments
   async removeComment(req, res, next) {
     try {
-      const comment = await commentsService.deleteComment(req.params.id, req.userInfo)
+      const comment = await commentsService.deleteComment(req.params.id, req.userInfo.id)
+      res.send(comment)
     } catch (error) {
       next(error)
     }
@@ -62,8 +63,8 @@ export class CommentsController extends BaseController {
   async createComment(req, res, next) {
     try {
       req.body.creatorId = req.userInfo.id
-      const event = await commentsService.createComment(req.body)
-      res.send(event)
+      const comment = await commentsService.createComment(req.body)
+      res.send(comment)
     } catch (error) {
       next(error)
     }
