@@ -1,20 +1,34 @@
 import { BadRequest, Forbidden } from "@bcwdev/auth0provider/lib/Errors.js"
 import { dbContext } from "../db/DbContext.js"
+import { eventsService } from "./EventsService.js"
 
 
 
 class TicketsService {
-  async deleteTicket(id, userInfo) {
-    const ticket = await this.getTicketById(id)
+  async getAllTickets(query) {
+    const tickets = await dbContext.Ticket.find({
+      isCanceled: false,
+      ...query
+    }).populate('account', 'name picture')
+    return tickets
+  }
 
-    // @ts-ignore
-    if (ticket.accountId.toString() != userInfo.id) {
-      throw new Forbidden('No canceling tickets that are not yours')
-    }
-    // soft delete
 
-    await ticket.save()
-    return ticket
+
+  async getTicketsByAccountId(accountId) {
+    const attendees = await dbContext.Account.find({ accountId })
+      .populate('account', 'title coverImg')
+
+    return attendees
+  }
+
+
+
+  async getTicketsByProfileId(profileId) {
+    const attendees = await dbContext.Account.find({ profileId })
+      .populate('profile', 'name picture')
+
+    return attendees
   }
 
 
@@ -31,7 +45,7 @@ class TicketsService {
 
 
 
-  async createTicket(ticketData) {
+  async addTicket(ticketData) {
     const event = await dbContext.Event.findById(ticketData.eventId)
     if (event.capacity == 0) {
       throw new BadRequest('No tickets available.')
@@ -49,20 +63,69 @@ class TicketsService {
   }
 
 
+  async addAttendeeToEvent(eventId, accountId) {
+    await eventsService.getEventIfNotCanceled(eventId)
+    const isAttendee = await this.getAttendeeForEvent(eventId, accountId)
 
-  async getAllTickets(query) {
-    const tickets = await dbContext.Ticket.find({
-      isCanceled: false,
-      ...query,
-    }).populate('account', 'name picture')
-    return tickets
+    if (isAttendee) {
+      return isAttendee
+    }
+
+    const attendee = await dbContext.Account.create(eventId, accountId)
+    await attendee.populate('profile', 'name picture')
+
+    return attendee
   }
 
 
 
-  async getTicketIfNotCanceled() {
+  async getAttendeeForEvent(eventId, accountId) {
+    const attendee = await dbContext.Account.findOne({ eventId, accountId })
+      .populate('profile', 'name picture')
+      .populate('event', 'title coverImg')
 
+    return attendee
   }
+
+
+
+  async deleteTicket(id, userInfo) {
+    const ticket = await this.getTicketById(id)
+
+    // @ts-ignore
+    if (ticket.accountId.toString() != userInfo.id) {
+      throw new Forbidden('No canceling tickets that are not yours')
+    }
+    // soft delete
+
+    await ticket.save()
+    return ticket
+  }
+
+
+
+  async removeAttendee(attendeeId, userId) {
+    const attendee = await dbContext.Account.findById(attendeeId)
+    if (!attendee) {
+      throw new BadRequest('Invalid attendee Id')
+    }
+
+    // NOTE use .toString() when comparing an id from the db to an id from the client
+
+    const event = await eventsService.getEventById(attendee.eventId)
+    // @ts-ignore
+    const theLoggedInUserIsTheOwner = userId == event.creatorId.toString()
+    // @ts-ignore
+    const theLoggedInUserIsTheAttendee = attendee.accountId.toString() == userId
+
+    if (!theLoggedInUserIsTheAttendee && !theLoggedInUserIsTheOwner) {
+      throw new Forbidden("You can't remove anyone but yourself.")
+    }
+
+    await attendee.remove()
+    return attendee
+  }
+
 }
 
 
