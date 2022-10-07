@@ -1,6 +1,5 @@
 import { dbContext } from "../db/DbContext.js"
 import { BadRequest, Forbidden } from "@bcwdev/auth0provider/lib/Errors.js";
-import { eventsService } from "./EventsService.js";
 
 
 class CommentService {
@@ -15,7 +14,6 @@ class CommentService {
 
   async getAllComments(query) {
     const comments = await dbContext.Comment.find(({
-      // get if not attached to a canceled event
       ...query
     }))
   }

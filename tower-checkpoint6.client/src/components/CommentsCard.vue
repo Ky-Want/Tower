@@ -21,8 +21,8 @@
 
         <!-- comments -->
         <div>
-          <h4>Name</h4>
-          <p>Individuals comment goes here</p>
+          <h4>comment.creator.name</h4>
+          <p>comment.body</p>
         </div>
       </div>
     </div>
@@ -31,8 +31,18 @@
 
 
 <script>
+import { Comment } from "../models/Comment.js";
+
 export default {
-  setup() {
+  props: {
+    comment: {
+      type: Comment,
+      required: true
+    }
+  },
+
+
+  setup(props) {
     return {}
   }
 }

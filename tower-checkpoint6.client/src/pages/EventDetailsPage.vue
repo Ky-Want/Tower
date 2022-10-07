@@ -43,7 +43,7 @@
     </div>
   </div>
 
-  <CommentsCard />
+  <CommentsCard v-for="c in comments" :key="c.id" :comment="c" />
 </template>
 
 
@@ -57,12 +57,21 @@ import { eventsService } from "../services/EventsService.js";
 import Pop from "../utils/Pop.js";
 import EventCard from '../components/EventCard.vue';
 import DeleteEvent from "../components/DeleteEvent.vue";
-import { ticketsService } from "../services/TicketsService.js";
 import CommentsCard from "../components/CommentsCard.vue";
+import { commentsService } from "../services/CommentsService.js";
 
 
 
 export default {
+  props: {
+    comment: {
+      type: Comment,
+      required: true
+    }
+  },
+
+
+
   setup() {
     const route = useRoute();
     const router = useRouter();
@@ -77,6 +86,15 @@ export default {
     // }
 
 
+    async function getComments() {
+      try {
+        await commentsService.getAllComments()
+      } catch (error) {
+        Pop.error("Cannot find comments")
+      }
+    }
+
+
     async function getEventById() {
       try {
         await eventsService.getEventsById(route.params.id);
@@ -89,6 +107,7 @@ export default {
 
     onMounted(() => {
       getEventById();
+      getComments();
       // getTickets();
     });
 
