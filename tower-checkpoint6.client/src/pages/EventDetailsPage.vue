@@ -68,13 +68,13 @@ export default {
     const router = useRouter();
 
 
-    async function getTickets() {
-      try {
-        await ticketsService.getTickets()
-      } catch (error) {
-        Pop.error("Cannot find tickets")
-      }
-    }
+    // async function getTickets() {
+    //   try {
+    //     await ticketsService.getTickets()
+    //   } catch (error) {
+    //     Pop.error("Cannot find tickets")
+    //   }
+    // }
 
 
     async function getEventById() {
@@ -89,14 +89,14 @@ export default {
 
     onMounted(() => {
       getEventById();
-      getTickets();
+      // getTickets();
     });
 
 
 
 
     return {
-      ticket: computed(() => AppState.tickets),
+      // ticket: computed(() => AppState.tickets),
       event: computed(() => AppState.activeEvents),
       account: computed(() => AppState.account),
 

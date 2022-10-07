@@ -22,28 +22,20 @@ class TicketsService {
 
 
 
-
-
   async getTicketsByAccountId(accountId) {
-    const tickets = await dbContext.Account.find({ accountId })
-      .populate('profile', 'name picture')
+    const tickets = await dbContext.Ticket.find({ accountId })
+      .populate('event')
     return tickets
   }
 
   async getTicketsByEventId(eventId) {
-    const tickets = await dbContext.Account.find({ eventId })
+    const tickets = await dbContext.Ticket.find({ eventId })
+      .populate('event')
       .populate('profile', 'name picture')
     return tickets
   }
 
 
-
-
-
-  async getAttendeesByEventId(accountId) {
-    const attendees = await dbContext.Account.find({ accountId }).populate('profile', 'name picture')
-    return attendees
-  }
 
   async getAttendeeForEvent(eventId, accountId) {
     const attendee = await dbContext.Account.findOne({ eventId, accountId })
@@ -107,7 +99,7 @@ class TicketsService {
 
 
 
-  // SECTION: add and remove attendees
+  // SECTION: add and remove people attending the event
   async addAttendeeToEvent(eventId, accountId) {
     const isAttendee = await this.getAttendeeForEvent(eventId, accountId)
     const attendee = await dbContext.Account.create(eventId, accountId)
@@ -137,7 +129,7 @@ class TicketsService {
     }
 
     if (!loggedInUserIsTheAttendee && !loggedInUserIsTheOwner) {
-      throw new Forbidden("You can't remove anyone but yourself.")
+      throw new Forbidden("You can't remove anyone but yourself from an event.")
     }
 
     await attendee.remove()
