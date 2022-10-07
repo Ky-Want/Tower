@@ -40,7 +40,7 @@ export class TicketsController extends BaseController {
 
   async getTicketsByAccountId(req, res, next) {
     try {
-      const tickets = await ticketsService.getTicketsByAccountId(req.userInfo)
+      const tickets = await ticketsService.getTicketsByAccountId(req.params.id)
       res.send(tickets)
     } catch (error) {
       next(error)
@@ -49,7 +49,7 @@ export class TicketsController extends BaseController {
 
   async getTicketsByEventId(req, res, next) {
     try {
-      const tickets = await ticketsService.getTicketsByEventId(req.eventId)
+      const tickets = await ticketsService.getTicketsByEventId(req.params.id)
       res.send(tickets)
     } catch (error) {
       next(error)

@@ -125,11 +125,11 @@ class TicketsService {
   async removeAttendee(attendeeId, userId) {
     // NOTE use .toString() when comparing an id from the db to an id from the client
     const attendee = await dbContext.Account.findById(attendeeId)
-    const event = await eventsService.getEventById(attendee.eventId)
+    const event = await eventsService.getEventById(attendee.id)
 
     // @ts-ignore (toString)
     const loggedInUserIsTheOwner = userId == event.creatorId.toString()
-    const loggedInUserIsTheAttendee = attendee.accountId.toString() == userId
+    const loggedInUserIsTheAttendee = attendee.id.toString() == userId
 
 
     if (!attendee) {

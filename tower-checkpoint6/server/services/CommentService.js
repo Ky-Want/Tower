@@ -1,5 +1,6 @@
 import { dbContext } from "../db/DbContext.js"
 import { BadRequest, Forbidden } from "@bcwdev/auth0provider/lib/Errors.js";
+import { eventsService } from "./EventsService.js";
 
 
 class CommentService {
@@ -40,14 +41,28 @@ class CommentService {
   }
 
   async deleteComment(id, userInfo) {
-    const comment = await this.getCommentById(id)
+    // const comment = await commentsService.getCommentById(id)
 
-    if (comment.creatorId.toString() != userInfo.id) {
+    const towerEvent = await eventsService.getEventById(id)
+    const commenter = await dbContext.Account.findById(userInfo.id)
+
+    const loggedInUserIsTheOwner = userInfo == towerEvent.toString()
+    const loggedInUserIsTheCommenter = commenter.id.toString() == userInfo
+
+    if (commenter.id.toString() != userInfo.id) {
       throw new Forbidden('You may not delete comments that are not your own.')
     }
 
-    await comment.save()
-    return comment
+    if (!commenter) {
+      throw new BadRequest('Invalid commenter Id')
+    }
+
+    if (!loggedInUserIsTheCommenter && !loggedInUserIsTheOwner) {
+      throw new Forbidden("You can't someone elses comment.")
+    }
+
+    // await comment.save()
+    // return comment
   }
 
 }
