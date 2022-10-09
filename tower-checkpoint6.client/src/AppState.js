@@ -9,18 +9,18 @@ export const AppState = reactive({
 
   /**@type {import('./models/TowerEvent.js/index.js').TowerEvent[]} */
   events: [],
-  /**@type {import('./models/TowerEvent.js/index.js').TowerEvent[]} */
+  /**@type {import('./models/TowerEvent.js/index.js').TowerEvent} */
   activeEvents: {},
 
 
   /**@type {import('./models/Ticket.js/index.js').Ticket[]} */
   tickets: [],
-  /**@type {import('./models/Ticket.js/index.js').Ticket[]} */
+  /**@type {import('./models/Ticket.js/index.js').Ticket} */
   activeTicket: {},
 
 
   /**@type {import('./models/Comment.js/index.js').Comment[]} */
   comments: [],
-  /**@type {import('./models/Comment.js/index.js').Comment[]} */
-  activeComment: {},
+  /**@type {import('./models/Comment.js/index.js').Comment | null} */
+  activeComment: null,
 })

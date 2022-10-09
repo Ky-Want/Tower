@@ -24,7 +24,19 @@
       </div>
 
       <div class="d-flex justify-content-between">
-        <p class="text-green"><strong>{{event?.capacity}} spots left</strong></p>
+        <!-- <p class="text-green"><strong>{{event?.capacity}} spots left</strong></p> -->
+        <div v-if="event?.capacity <= 0" class="text-dark bg-danger rounded p-1 px-2">
+          At Capacity
+        </div>
+
+        <div v-if="event?.capacity >= 1" class="text-green">
+          {{event?.capacity}} spots left
+        </div>
+
+        <div v-else="event?.isCanceled == true" class="text-dark bg-danger rounded p-1 px-2">
+          Canceled
+        </div>
+
         <button class="text-dark bg-primary">ATTEND</button>
       </div>
 
@@ -33,11 +45,6 @@
       </div>
     </div>
   </div>
-
-
-
-
-
 
   <!-- SECTION: ticket holders pics -->
   <div class="container mt-5 mb-5">
@@ -54,19 +61,19 @@
   <!-- SECTION: comments form -->
   <div class="container mb-5">
     <div class="bg-dark card d-flex justify-content-center p-3">
-      <!-- <div class="row justify-content-center">
+      <div class="row justify-content-center">
         <div class="col-8 d-flex justify-content-center text-secondary p-2">
           <label for="comment" class="form-label"></label>
           <textarea class="form-control" id="comment" rows="3"></textarea>
         </div>
-      </div> -->
+      </div>
 
-      <CreateComment />
+      <!-- <CreateComment /> -->
 
       <!-- comment button -->
-      <!-- <div class="d-flex justify-content-end mt-5 mb-4">
-        <button type="submit" class="commentBtn rounded selectable" @click="createComment()">Post Comment</button>
-      </div> -->
+      <div class="d-flex justify-content-end mt-5 mb-4">
+        <button type="submit" class="commentBtn rounded selectable" @click="handleSubmit()">Post Comment</button>
+      </div>
       <!-- commenters pic -->
       <div v-for="c in comments" :key="c.id" :comment="c"
         class="mt-5 pt-5 d-flex gap-5 justify-content-center align-items-center">
@@ -77,8 +84,8 @@
 
         <!-- comments -->
         <div>
-          <h4>{{comment.creator.name}}</h4>
-          <p>{{comment.body}}</p>
+          <h4>Name: {{comment.creator.name}}</h4>
+          <p>comment: {{comment.body}}</p>
         </div>
       </div>
     </div>
@@ -93,14 +100,17 @@
 import { computed } from '@vue/reactivity';
 import { onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { api } from "../services/AxiosService.js";
+
 import { AppState } from '../AppState.js';
-import { eventsService } from "../services/EventsService.js";
+import { ref } from 'vue';
 import Pop from "../utils/Pop.js";
+
+import { eventsService } from "../services/EventsService.js";
 import EventCard from '../components/EventCard.vue';
 import DeleteEvent from "../components/DeleteEvent.vue";
+
 import { commentsService } from "../services/CommentsService.js";
-import { api } from "../services/AxiosService.js";
-import CreateComment from "../components/CreateComment.vue";
 
 
 
@@ -118,17 +128,6 @@ export default {
     const route = useRoute();
     const router = useRouter();
 
-
-
-
-
-    async function getAllComments() {
-      try {
-        await commentsService.getAllComments()
-      } catch (error) {
-        Pop.error("Cannot find comments")
-      }
-    }
 
 
     async function getCommentsByEventId() {
@@ -155,17 +154,18 @@ export default {
 
 
 
-
-    onMounted(() => {
-      getEventById();
-      getAllComments();
-      getCommentsByEventId();
+    const editable = ref({
+      body: AppState.comments.body || route.params.id,
+      eventId: AppState.activeEvents.id || route.params.id,
     });
 
 
 
 
-
+    onMounted(() => {
+      getEventById();
+      getCommentsByEventId();
+    });
 
 
     return {
@@ -173,6 +173,20 @@ export default {
       account: computed(() => AppState.account),
       comment: computed(() => AppState.comments),
 
+
+
+      editable,
+      async handleSubmit() {
+        try {
+          const commentData = editable.value
+          const newComment = await commentsService.createComment(commentData)
+
+          console.log('Sending comment form', newComment);
+
+        } catch (error) {
+          Pop.error(error, '[Submitting Comment Form]')
+        }
+      },
 
 
 
@@ -188,28 +202,13 @@ export default {
       },
 
 
-
-      // async createComment(id) {
-      //   try {
-      //     console.log('create comment in event details');
-      //     const res = await api.post('api/comments', commentData)
-
-      //     comment
-      //       .push(new Comment(res.data))
-
-      //   } catch (error) {
-      //     console.error(error, 'creating comment: eventDetails page')
-      //   }
-      // },
-
-
       async createComment() {
         try {
           if (!AppState.account.id) {
             return AuthService.loginWithRedirect()
           }
           await eventsService.createComment({
-            albumId: AppState.activeAlbum.id || route.params.id
+            eventId: AppState.activeEvents.id || route.params.id
           })
           Pop.success('Thank you for your input.')
         } catch (error) {
@@ -219,7 +218,7 @@ export default {
 
     };
   },
-  components: { EventCard, DeleteEvent, CreateComment }
+  components: { EventCard, DeleteEvent }
 }
 </script>
 

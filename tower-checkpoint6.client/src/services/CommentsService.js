@@ -15,14 +15,15 @@ class CommentsService {
   }
 
 
-  async getCommentById(id) {
-    const res = await api.get(`api/events/${id}/comments`)
-    AppState.activeComment = new Comment(res.data)
-  }
+  async getCommentsByEventId(eventId, formData) {
+    try {
+      const res = await api.get(`api/events/${eventId}/comments`, formData)
+      AppState.activeComment = new Comment(res.data)
 
-
-  async getCommentsByEventId() {
-
+      console.log('get comments by event id: ', res.data);
+    } catch (error) {
+      console.error('get comments by event id Failed')
+    }
   }
 
 
