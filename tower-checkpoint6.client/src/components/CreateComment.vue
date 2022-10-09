@@ -16,6 +16,7 @@
 import { ref } from "vue"
 import { useRoute } from "vue-router";
 import { AppState } from "../AppState.js";
+import { api } from "../services/AxiosService.js";
 import { commentsService } from "../services/CommentsService.js";
 import Pop from "../utils/Pop.js"
 
@@ -25,7 +26,8 @@ export default {
     const route = useRoute()
 
     const editable = ref({
-      eventId: AppState.activeEvents.id || route.params.id
+      // eventId: AppState.activeEvents.id || route.params.id
+      eventId: AppState.comments.id || route.params.id
     });
 
     return {
@@ -35,7 +37,7 @@ export default {
           const commentData = editable.value
           let newComment = await commentsService.createComment(commentData)
 
-          console.log('Sending comment form', newComment);
+          console.log('Sending comment form', newComment, commentData);
 
         } catch (error) {
           Pop.error(error, '[Submitting Comment Form]')

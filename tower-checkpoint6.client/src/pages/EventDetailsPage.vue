@@ -119,11 +119,24 @@ export default {
     const router = useRouter();
 
 
-    async function getComments() {
+
+
+
+    async function getAllComments() {
       try {
         await commentsService.getAllComments()
       } catch (error) {
         Pop.error("Cannot find comments")
+      }
+    }
+
+
+    async function getCommentsByEventId() {
+      try {
+        await commentsService.getCommentsByEventId(route.params.id);
+      }
+      catch (error) {
+        Pop.error(error, "[GetComments: event details page]");
       }
     }
 
@@ -138,10 +151,19 @@ export default {
       }
     }
 
+
+
+
+
+
     onMounted(() => {
       getEventById();
-      getComments();
+      getAllComments();
+      getCommentsByEventId();
     });
+
+
+
 
 
 
@@ -150,6 +172,10 @@ export default {
       event: computed(() => AppState.activeEvents),
       account: computed(() => AppState.account),
       comment: computed(() => AppState.comments),
+
+
+
+
 
 
       async cancelEvent(id) {
@@ -162,19 +188,34 @@ export default {
       },
 
 
-      async createComment(id) {
+
+      // async createComment(id) {
+      //   try {
+      //     console.log('create comment in event details');
+      //     const res = await api.post('api/comments', commentData)
+
+      //     comment
+      //       .push(new Comment(res.data))
+
+      //   } catch (error) {
+      //     console.error(error, 'creating comment: eventDetails page')
+      //   }
+      // },
+
+
+      async createComment() {
         try {
-          console.log('create comment in event details');
-          const res = await api.post('api/comments', commentData)
-
-          // AppState.comments
-          comment
-            .push(new Comment(res.data))
-
+          if (!AppState.account.id) {
+            return AuthService.loginWithRedirect()
+          }
+          await eventsService.createComment({
+            albumId: AppState.activeAlbum.id || route.params.id
+          })
+          Pop.success('Thank you for your input.')
         } catch (error) {
-          console.error(error, 'creating comment: eventDetails page')
+          Pop.error(error, '[create comment: event details page]')
         }
-      }
+      },
 
     };
   },

@@ -9,8 +9,6 @@ class CommentsService {
     try {
       const res = await api.get('api/comments')
       AppState.comments = res.data
-
-      console.log('comments in service: ', res.data);
     } catch (error) {
       logger.error('get all comments in service failed')
     }
@@ -23,6 +21,11 @@ class CommentsService {
   }
 
 
+  async getCommentsByEventId() {
+
+  }
+
+
 
 
 
@@ -30,7 +33,8 @@ class CommentsService {
 
   async createComment(commentData) {
     const res = await api.post(`api/comments`, commentData)
-    AppState.comments.post(new Comment(res.data))
+    const comment = res.data
+    AppState.comments = [...AppState.comments, comment]
 
     console.log('creating comment in service:', res.data);
   }

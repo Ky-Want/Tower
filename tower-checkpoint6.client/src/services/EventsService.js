@@ -1,10 +1,14 @@
+import { useRouter } from "vue-router";
 import { AppState } from "../AppState.js"
 import { TowerEvent } from "../models/TowerEvent.js";
 import { api } from "./AxiosService.js";
 
 
+const router = useRouter()
 
 class EventsService {
+
+
   async getEvents(type = '') {
     let res
     if (!type) {
@@ -30,9 +34,13 @@ class EventsService {
 
 
   async cancelEvent(id) {
-    const res = await api.delete(`api/events/${id}`)
-    AppState.events = AppState.events.filter(c => c.id != id)
+    await api.delete(`/api/events/${id}`)
+    AppState.events = AppState.events.filter(eh => eh.id != id)
+    AppState.activeEvents = null
+
+    // router.push({ name: 'Home' })
   }
+
 
 
 
