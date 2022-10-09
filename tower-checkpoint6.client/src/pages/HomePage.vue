@@ -94,6 +94,7 @@ export default {
 
         console.log('creating event: Home Page, ', createEvent(id));
       }
+
     };
   },
   components: { Navbar, EventCard, CreateEvent }

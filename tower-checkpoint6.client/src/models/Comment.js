@@ -6,8 +6,5 @@ export class Comment {
     this.body = data.body //string
 
     this.creator = data.creator //virtual
-
-    //stretch goal
-    this.isAttending = data.isAttending //boolean
   }
 }

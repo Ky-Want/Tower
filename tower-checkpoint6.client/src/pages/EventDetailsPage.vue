@@ -35,6 +35,10 @@
   </div>
 
 
+
+
+
+
   <!-- SECTION: ticket holders pics -->
   <div class="container mt-5 mb-5">
     <div class="bg-dark rounded p-3">
@@ -43,8 +47,45 @@
     </div>
   </div>
 
-  <CommentsCard v-for="c in comments" :key="c.id" :comment="c" />
+
+
+
+
+  <!-- SECTION: comments form -->
+  <div class="container mb-5">
+    <div class="bg-dark card d-flex justify-content-center p-3">
+      <!-- <div class="row justify-content-center">
+        <div class="col-8 d-flex justify-content-center text-secondary p-2">
+          <label for="comment" class="form-label"></label>
+          <textarea class="form-control" id="comment" rows="3"></textarea>
+        </div>
+      </div> -->
+
+      <CreateComment />
+
+      <!-- comment button -->
+      <!-- <div class="d-flex justify-content-end mt-5 mb-4">
+        <button type="submit" class="commentBtn rounded selectable" @click="createComment()">Post Comment</button>
+      </div> -->
+      <!-- commenters pic -->
+      <div v-for="c in comments" :key="c.id" :comment="c"
+        class="mt-5 pt-5 d-flex gap-5 justify-content-center align-items-center">
+
+        <div>
+          <img src="//thiscatdoesnotexist.com" alt="Commenters name here" class="comment-pic rounded">
+        </div>
+
+        <!-- comments -->
+        <div>
+          <h4>{{comment.creator.name}}</h4>
+          <p>{{comment.body}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
+
+
 
 
 
@@ -57,8 +98,9 @@ import { eventsService } from "../services/EventsService.js";
 import Pop from "../utils/Pop.js";
 import EventCard from '../components/EventCard.vue';
 import DeleteEvent from "../components/DeleteEvent.vue";
-import CommentsCard from "../components/CommentsCard.vue";
 import { commentsService } from "../services/CommentsService.js";
+import { api } from "../services/AxiosService.js";
+import CreateComment from "../components/CreateComment.vue";
 
 
 
@@ -75,15 +117,6 @@ export default {
   setup() {
     const route = useRoute();
     const router = useRouter();
-
-
-    // async function getTickets() {
-    //   try {
-    //     await ticketsService.getTickets()
-    //   } catch (error) {
-    //     Pop.error("Cannot find tickets")
-    //   }
-    // }
 
 
     async function getComments() {
@@ -108,16 +141,15 @@ export default {
     onMounted(() => {
       getEventById();
       getComments();
-      // getTickets();
     });
 
 
 
 
     return {
-      // ticket: computed(() => AppState.tickets),
       event: computed(() => AppState.activeEvents),
       account: computed(() => AppState.account),
+      comment: computed(() => AppState.comments),
 
 
       async cancelEvent(id) {
@@ -127,11 +159,26 @@ export default {
         } catch (error) {
           console.error(error, 'Deleting Post: Event Details page')
         }
+      },
+
+
+      async createComment(id) {
+        try {
+          console.log('create comment in event details');
+          const res = await api.post('api/comments', commentData)
+
+          // AppState.comments
+          comment
+            .push(new Comment(res.data))
+
+        } catch (error) {
+          console.error(error, 'creating comment: eventDetails page')
+        }
       }
 
     };
   },
-  components: { EventCard, DeleteEvent, CommentsCard }
+  components: { EventCard, DeleteEvent, CreateComment }
 }
 </script>
 
@@ -142,5 +189,15 @@ export default {
 <style lang="scss" scoped>
 .text-green {
   color: green;
+}
+
+.comment-pic {
+  height: 4rem;
+  width: 4rem;
+}
+
+.commentBtn {
+  height: 2rem;
+  width: 8rem;
 }
 </style>

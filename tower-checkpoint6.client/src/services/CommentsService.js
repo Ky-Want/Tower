@@ -18,26 +18,29 @@ class CommentsService {
 
 
   async getCommentById(id) {
-    const res = await api.get(`api/comments/${id}`)
+    const res = await api.get(`api/events/${id}/comments`)
     AppState.activeComment = new Comment(res.data)
   }
 
 
-  async deleteComment(id) {
-    const res = await api.delete(`api/comments/${id}`)
-    AppState.comments = AppState.comments.filter(c = c.id != id)
 
-    return res.data
-  }
+
+
 
 
   async createComment(commentData) {
-    const res = await api.post('/api/comments', commentData)
-    AppState.comments.push(new Comment(res.data))
+    const res = await api.post(`api/comments`, commentData)
+    AppState.comments.post(new Comment(res.data))
 
-    console.log('creating comment in service:');
+    console.log('creating comment in service:', res.data);
+  }
 
-    return res.data
+
+  async removeComment(id) {
+    const res = await api.delete(`api/comments/${id}`)
+    AppState.comments = AppState.comments.filter(c => c.id != id)
+
+    console.log('removing comment in service', res.data)
   }
 
 }
