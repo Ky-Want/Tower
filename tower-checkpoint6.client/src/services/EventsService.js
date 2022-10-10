@@ -46,11 +46,10 @@ class EventsService {
 
   async createEvent(eventData) {
     const res = await api.post('/api/events', eventData)
-    AppState.events.push(new TowerEvent(res.data))
-
-    console.log('creating event: Events Service');
-
-    return res.data
+    const towerEvent = new TowerEvent(res.data)
+    AppState.events.push(towerEvent)
+    console.log('creating event: Events Service', towerEvent);
+    return towerEvent
   }
 }
 

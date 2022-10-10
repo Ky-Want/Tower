@@ -18,7 +18,7 @@ class CommentsService {
   async getCommentsByEventId(id, formData) {
     try {
       const res = await api.get(`api/events/${id}/comments`, formData)
-      AppState.activeComment = new Comment(res.data)
+      AppState.comments = res.data.map(c => new Comment(c))
 
       console.log('get comments by event id: ', res.data);
     } catch (error) {

@@ -19,6 +19,7 @@ export class EventController extends BaseController {
       .post('', this.createEvent)
       .put('/:id', this.editEvent)
       .delete('/:id', this.cancelEvent)
+
   }
 
 

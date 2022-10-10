@@ -4,6 +4,11 @@ import { dbContext } from "../db/DbContext.js";
 
 
 class EventsService {
+  async cleanup() {
+    await dbContext.Event.deleteMany()
+    await dbContext.Ticket.deleteMany()
+    await dbContext.Comment.deleteMany()
+  }
   async cancelEvent(id, userInfo) {
     const event = await this.getEventById(id)
 

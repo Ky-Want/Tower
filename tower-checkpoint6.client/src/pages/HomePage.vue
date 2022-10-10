@@ -78,7 +78,6 @@ export default {
     return {
       events: computed(() => AppState.events.filter(a => a.name.toUpperCase())),
 
-
       async getType(type) {
         try {
           await eventsService.getEvents(type)
@@ -93,7 +92,7 @@ export default {
         const res = await api.post('/api/events', eventData)
         AppState.events.push(new Event(res.data))
 
-        console.log('creating event: Home Page, ', createEvent(id));
+        console.log('creating event: Home Page, ');
       }
 
     };
