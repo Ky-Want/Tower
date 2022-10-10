@@ -50,12 +50,13 @@
 import Navbar from "../components/Navbar.vue";
 import EventCard from "../components/EventCard.vue";
 import { eventsService } from "../services/EventsService.js";
-import Pop from "../utils/Pop.js";
+import CreateEvent from "../components/CreateEvent.vue";
+
 import { onMounted } from "vue";
 import { computed } from "@vue/reactivity";
 import { AppState } from "../AppState.js";
 import { api } from "../services/AxiosService.js";
-import CreateEvent from "../components/CreateEvent.vue";
+import Pop from "../utils/Pop.js";
 
 
 export default {

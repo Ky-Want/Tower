@@ -24,7 +24,6 @@
       </div>
 
       <div class="d-flex justify-content-between">
-        <!-- <p class="text-green"><strong>{{event?.capacity}} spots left</strong></p> -->
         <div v-if="event?.capacity <= 0" class="text-dark bg-danger rounded p-1 px-2">
           At Capacity
         </div>
@@ -60,7 +59,7 @@
 
   <!-- SECTION: comments form -->
   <div class="container mb-5">
-    <div class="bg-dark card d-flex justify-content-center p-3">
+    <form @submit.prevent="handleSubmit()" class="bg-dark card d-flex justify-content-center p-3">
       <div class="row justify-content-center">
         <div class="col-8 d-flex justify-content-center text-secondary p-2">
           <label for="comment" class="form-label"></label>
@@ -68,27 +67,23 @@
         </div>
       </div>
 
-      <!-- <CreateComment /> -->
-
-      <!-- comment button -->
       <div class="d-flex justify-content-end mt-5 mb-4">
-        <button type="submit" class="commentBtn rounded selectable" @click="handleSubmit()">Post Comment</button>
+        <button type="submit" class="commentBtn rounded selectable">Post Comment</button>
       </div>
-      <!-- commenters pic -->
+
       <div v-for="c in comments" :key="c.id" :comment="c"
         class="mt-5 pt-5 d-flex gap-5 justify-content-center align-items-center">
 
         <div>
-          <img src="//thiscatdoesnotexist.com" alt="Commenters name here" class="comment-pic rounded">
+          <img :src="comment.creator?.picture" :alt="commenter.creator?.name" class="comment-pic rounded">
         </div>
 
-        <!-- comments -->
         <div>
-          <h4>Name: {{comment.creator.name}}</h4>
-          <p>comment: {{comment.body}}</p>
+          <h4>{{comment.creator?.name}}</h4>
+          <p>{{comment?.body}}</p>
         </div>
       </div>
-    </div>
+    </form>
   </div>
 </template>
 
@@ -100,16 +95,12 @@
 import { computed } from '@vue/reactivity';
 import { onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { api } from "../services/AxiosService.js";
 
 import { AppState } from '../AppState.js';
 import { ref } from 'vue';
 import Pop from "../utils/Pop.js";
 
 import { eventsService } from "../services/EventsService.js";
-import EventCard from '../components/EventCard.vue';
-import DeleteEvent from "../components/DeleteEvent.vue";
-
 import { commentsService } from "../services/CommentsService.js";
 
 
@@ -119,14 +110,22 @@ export default {
     comment: {
       type: Comment,
       required: true
+    },
+    event: {
+      type: Event,
+      required: true
     }
   },
 
 
 
-  setup() {
+  setup(props) {
     const route = useRoute();
     const router = useRouter();
+    const editable = ref({
+      eventId: AppState.activeEvents.id || route.params.id,
+      body: AppState.activeComment.body || route.params.id,
+    });
 
 
 
@@ -145,20 +144,10 @@ export default {
         await eventsService.getEventsById(route.params.id);
       }
       catch (error) {
-        Pop.error("Sorry that event no longer exists", "[GettingEvent]");
+        Pop.error("Sorry that event no longer exists", "[GettingEventById]");
         router.push({ name: "Home" });
       }
     }
-
-
-
-
-
-    const editable = ref({
-      body: AppState.comments.body || route.params.id,
-      eventId: AppState.activeEvents.id || route.params.id,
-    });
-
 
 
 
@@ -178,6 +167,10 @@ export default {
       editable,
       async handleSubmit() {
         try {
+          if (!AppState.account.id) {
+            return AuthService.loginWithRedirect()
+          }
+
           const commentData = editable.value
           const newComment = await commentsService.createComment(commentData)
 
@@ -191,7 +184,6 @@ export default {
 
 
 
-
       async cancelEvent(id) {
         try {
           await Pop.confirm('Are you sure you want to delete this Event?')
@@ -201,24 +193,9 @@ export default {
         }
       },
 
-
-      async createComment() {
-        try {
-          if (!AppState.account.id) {
-            return AuthService.loginWithRedirect()
-          }
-          await eventsService.createComment({
-            eventId: AppState.activeEvents.id || route.params.id
-          })
-          Pop.success('Thank you for your input.')
-        } catch (error) {
-          Pop.error(error, '[create comment: event details page]')
-        }
-      },
-
     };
   },
-  components: { EventCard, DeleteEvent }
+  components: {}
 }
 </script>
 
