@@ -142,6 +142,7 @@
 import { ref } from "vue"
 import { useRouter } from "vue-router"
 import { eventsService } from "../services/EventsService.js"
+import { logger } from "../utils/Logger.js"
 import Pop from "../utils/Pop.js"
 
 
@@ -165,7 +166,8 @@ export default {
           console.log('Sending form');
 
         } catch (error) {
-          Pop.error(error, '[Submitting Event Form]')
+          Pop.error(error, '[Submitting Event Form failed]')
+          logger.error(error, 'submitting create event form')
         }
       }
     }
