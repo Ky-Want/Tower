@@ -57,6 +57,7 @@ import { computed } from "@vue/reactivity";
 import { AppState } from "../AppState.js";
 import { api } from "../services/AxiosService.js";
 import Pop from "../utils/Pop.js";
+import { logger } from "../utils/Logger.js";
 
 
 export default {
@@ -65,7 +66,8 @@ export default {
       try {
         await eventsService.getEvents();
       } catch (error) {
-        Pop.error(error, 'getting events: Home Page')
+        Pop.error('getting events: Home Page')
+        logger.error(error, 'getting events: Home page')
       }
     }
 
@@ -82,17 +84,21 @@ export default {
         try {
           await eventsService.getEvents(type)
         } catch (error) {
-          Pop.error(error, '[Getting Event Type: Home Page]')
+          Pop.error('[Getting Event Type: Home Page]')
+          logger.error(error, 'getting event type: home page')
         }
       },
 
 
 
       async createEvent(id) {
-        const res = await api.post('/api/events', eventData)
-        AppState.events.push(new Event(res.data))
-
-        console.log('creating event: Home Page, ');
+        try {
+          const res = await api.post('/api/events', eventData)
+          AppState.events.push(new Event(res.data))
+        } catch (error) {
+          Pop.error('creating event')
+          logger.error(error, 'creating event: home page')
+        }
       }
 
     };

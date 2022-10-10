@@ -179,7 +179,7 @@ export default {
 
           console.log('Sending comment form', commentData);
         } catch (error) {
-          Pop.error(error, '[Submitting Comment Form]')
+          Pop.error('[Submitting Comment Form]')
         }
       },
 
@@ -190,6 +190,7 @@ export default {
           console.log('creating ticket: Event details Page, '); //Don't call functions in the log
         } catch (error) {
           console.error(error, 'Adding Ticket: event details page')
+          Pop.error('Adding Ticket: event details page')
         }
       },
 
@@ -200,6 +201,7 @@ export default {
           }
         } catch (error) {
           console.error(error, 'Deleting Post: Event Details page')
+          Pop.error('Deleting post: Event Details page')
         }
       },
 
@@ -211,6 +213,7 @@ export default {
           await commentsService.removeComment(id)
         } catch (error) {
           console.error(error, 'Deleting comment: event details page')
+          Pop.error('Deleting comment: event details page')
         }
       }
 

@@ -2,6 +2,7 @@ import { logger } from "../utils/Logger.js";
 import { api } from "./AxiosService.js";
 import { AppState } from "../AppState.js"
 import { Comment } from "../models/Comment.js";
+import Pop from "../utils/Pop.js";
 
 
 class CommentsService {
@@ -11,6 +12,7 @@ class CommentsService {
       AppState.comments = res.data
     } catch (error) {
       logger.error('get all comments in service failed')
+      Pop.error('getting all comments')
     }
   }
 
@@ -23,6 +25,7 @@ class CommentsService {
       console.log('get comments by event id: ', res.data);
     } catch (error) {
       console.error('get comments by event id Failed')
+      Pop.error('getting comments by event id')
     }
   }
 
@@ -33,19 +36,25 @@ class CommentsService {
 
 
   async createComment(commentData) {
-    const res = await api.post(`api/comments`, commentData)
-    const comment = res.data
-    AppState.comments = [...AppState.comments, comment]
-
-    console.log('creating comment in service:', res.data);
+    try {
+      const res = await api.post(`api/comments`, commentData)
+      const comment = res.data
+      AppState.comments = [...AppState.comments, comment]
+    } catch (error) {
+      logger.error('creating comment: comments service')
+      Pop.error('creating comment in service failed')
+    }
   }
 
 
   async removeComment(id) {
-    const res = await api.delete(`api/comments/${id}`)
-    AppState.comments = AppState.comments.filter(c => c.id != id)
-
-    console.log('removing comment in service', res.data)
+    try {
+      const res = await api.delete(`api/comments/${id}`)
+      AppState.comments = AppState.comments.filter(c => c.id != id)
+    } catch (error) {
+      logger.error('removing comment in service')
+      Pop.error('removing comment in service failed')
+    }
   }
 
 }
