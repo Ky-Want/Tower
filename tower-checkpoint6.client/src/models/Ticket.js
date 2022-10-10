@@ -5,7 +5,7 @@ export class Ticket {
     this.eventId = data.eventId //Object Id
     this.accountId = data.accountId //Object Id
 
-    this.account = data.account //virtual
-    this.towerEvent = data.towerEvent //virtual
+    this.account = data.account || {} //virtual
+    this.towerEvent = data.towerEvent || data.event || {} //virtual
   }
 }

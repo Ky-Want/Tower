@@ -7,28 +7,28 @@
 
       <div>
         <div class="pb-1">
-          <strong>{{ticket?.name}}</strong>
+          <strong>{{ticket.towerEvent?.name}}</strong>
         </div>
 
         <div class="pb-1">
-          <em>{{ticket?.location}}</em>
+          <em>{{ticket.towerEvent?.location}}</em>
         </div>
 
         <div class="pb-1">
-          {{new Date(ticket?.startDate).toLocaleDateString()}}
+          {{new Date(ticket.towerEvent?.startDate).toLocaleDateString()}}
         </div>
       </div>
 
       <div class="d-flex justify-content-end mt-2">
-        <div v-if="event?.capacity <= 0" class="text-dark bg-danger rounded p-1 px-2">
+        <div v-if="ticket.towerEvent?.capacity <= 0" class="text-dark bg-danger rounded p-1 px-2">
           At Capacity
         </div>
 
-        <div v-if="event?.capacity >= 1" class="text-success">
-          {{event?.capacity}} spots left
+        <div v-if="ticket.towerEvent?.capacity >= 1" class="text-success">
+          {{ticket.towerEvent?.capacity}} spots left
         </div>
 
-        <div v-else="event?.isCanceled == true" class="text-dark bg-danger rounded p-1 px-2">
+        <div v-else="ticket.towerEvent?.isCanceled == true" class="text-dark bg-danger rounded p-1 px-2">
           Canceled
         </div>
       </div>
@@ -45,10 +45,6 @@ export default {
   props: {
     ticket: {
       type: Ticket,
-      required: true
-    },
-    event: {
-      type: TowerEvent,
       required: true
     }
   },

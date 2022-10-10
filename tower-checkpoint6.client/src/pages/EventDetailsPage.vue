@@ -27,19 +27,20 @@
         </div>
 
         <div class="d-flex justify-content-between">
-          <div v-if="event?.capacity <= 0" class="text-dark bg-danger rounded p-1 px-2">
-            At Capacity
-          </div>
-
-          <div v-if="event?.capacity >= 1" class="text-green">
-            {{event?.capacity}} spots left
-          </div>
-
-          <div v-else="event?.isCanceled == true" class="text-dark bg-danger rounded p-1 px-2">
+          <div v-if="event?.isCanceled == true" class="text-dark bg-danger rounded p-1 px-2">
             Canceled
           </div>
 
-          <button class="text-dark bg-primary">ATTEND</button>
+          <div v-else-if="event?.capacity <= 0" class="text-dark bg-danger rounded p-1 px-2">
+            At Capacity
+          </div>
+
+          <div v-else-if="event?.capacity >= 1" class="text-green">
+            {{event?.capacity}} spots left
+          </div>
+
+          <button v-if="event?.capacity >=1 && !activeTicket" class="text-dark bg-primary"
+            @click="addTicket()">ATTEND</button>
         </div>
 
         <div @click="cancelEvent(event.id)" v-if="event.creatorId == account.id"
@@ -51,9 +52,8 @@
 
     <!-- SECTION: ticket holders pics -->
     <div class="container mt-5 mb-5">
-      <div class="bg-dark rounded p-3">
-        <!-- {{tickets.account.picture}} -->
-        Attendees pics will go here
+      <div class="bg-dark rounded p-3 d-flex flex-wrap">
+        <img :src="t.profile?.picture" :alt="t.profile.name" :title="t.profile.name" v-for="t in tickets" :key="t.id">
       </div>
     </div>
 
@@ -110,6 +110,7 @@ import { eventsService } from "../services/EventsService.js";
 import { commentsService } from "../services/CommentsService.js";
 
 import { Ticket } from "../models/Ticket.js";
+import { ticketsService } from "../services/TicketsService.js";
 
 
 
@@ -129,6 +130,15 @@ export default {
       }
     }
 
+    async function getTicketsByEventId() {
+      try {
+        await ticketsService.getTicketsByEventId(route.params.id);
+      }
+      catch (error) {
+        Pop.error(error, "[GetTickets: event details page]");
+      }
+    }
+
     async function getEventById() {
       try {
         await eventsService.getEventsById(route.params.id);
@@ -144,6 +154,7 @@ export default {
     onMounted(() => {
       getEventById();
       getCommentsByEventId();
+      getTicketsByEventId();
     });
 
 
@@ -152,6 +163,8 @@ export default {
       event: computed(() => AppState.activeEvents),
       account: computed(() => AppState.account),
       comments: computed(() => AppState.comments),
+      tickets: computed(() => AppState.tickets),
+      activeTicket: computed(() => AppState.tickets.find(t => t.accountId == AppState.account.id)),
 
       async handleSubmit() {
         try {
@@ -170,12 +183,14 @@ export default {
         }
       },
 
-
-      async addTicket(ticketData) {
-        const res = await api.post('/api/tickets', ticketData)
-        AppState.tickets.push(new Ticket(res.data))
-
-        console.log('creating ticket: Event details Page, '); //Don't call functions in the log
+      async addTicket() {
+        try {
+          const ticketData = { eventId: AppState.activeEvents.id }
+          await ticketsService.addTicket(ticketData)
+          console.log('creating ticket: Event details Page, '); //Don't call functions in the log
+        } catch (error) {
+          console.error(error, 'Adding Ticket: event details page')
+        }
       },
 
       async cancelEvent(id) {
